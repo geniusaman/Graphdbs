@@ -1,0 +1,32 @@
+Excel shortcut
+cntrl B- Bold
+cntrl I -italic
+ctrl D- fill down(copy the cell to selected cell)
+ctrl E - Fash fill (identify shortcut pattern and automatically fill the selected cells)
+ctrl F- find
+ctrl H - replace
+ctrl K - add hyperlink
+ctrl L - to create table(convert simple data into table)
+ctrl N- new workbook
+ctrl w- close the workbook
+ctrl o- open workbook
+ctrl p - print 
+ctrl s - save the file
+ctrl r- fill right
+ctrl t - insert table
+ctrl u- underline
+ctrl v- paste
+ctrl x- cut
+ctrl Z- undo
+ctrl Y- redu
+alt m -formula tab
+alt + page dn - shifting entire screen horizontally
+alt+ down arraw key- give me list of that particular column values 
+alt+ tab - to watch all files that are opened
+alt+ enter - create new line in same cell
+fn+f7 - check the spelling
+shift+ arrow key(down, up, left, bottom)- to select the data
+shift+ space bar- entire row selected
+shift + tab - move right
+ctrl+~ - show all the hide formulas
+=O2*((Q2*R2)+((S2/100)*(Q2*R2))+(N2*U2))

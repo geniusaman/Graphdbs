@@ -5,3 +5,5 @@ langchain_openai
 langchain_groq
 neo4j
 streamlit
+streamlit_chat
+

@@ -12,6 +12,10 @@ examples = [
         "query": "MATCH (s:Supplier) WITH s, (s.sustainabilityRating + s.financialHealthScore) AS combinedScore ORDER BY combinedScore DESC LIMIT 5 RETURN s.supplierName AS supplierName, s.sustainabilityRating AS supplierRating, s.financialHealthScore AS financialHealthScore",
     },
     {
+        "question": "which suppliers have the highest financial score for software development and management?",
+        "query": "MATCH (s:Supplier)-[:PROVIDES_CATEGORY]->(c:Category {{categoryName: 'Software Development and Management'}}) RETURN s.supplierName AS SupplierName, s.financialHealthScore AS FinancialScore ORDER BY s.financialHealthScore DESC LIMIT 5",
+    },
+    {
         "question": "Which suppliers are offering the best payment terms (e.g., early payment discounts)?",
         "query": "MATCH (s:Supplier)-[:ISSUED_TO]-(po:PurchaseOrder) WHERE po.paymentTerms CONTAINS 'discount' RETURN DISTINCT s.supplierName AS supplier, po.paymentTerms AS paymentTerms ORDER BY po.paymentTerms",
     },
@@ -20,8 +24,16 @@ examples = [
         "query": "MATCH (po:PurchaseOrder) WITH count(po) AS totalPOs MATCH (po:PurchaseOrder)-[:ISSUED_TO]->(s:Supplier) WHERE s.country = 'US' WITH totalPOs, count(po) AS usPOs RETURN usPOs AS POsIssuedToUSSuppliers, totalPOs AS TotalPOs, round((toFloat(usPOs) / totalPOs) * 100, 2) AS PercentageOfPOsToUSSuppliers",
     },
     {
+        "question": "How has my total procurement spend changed over the last 3 years?",
+        "query": "MATCH (po:PurchaseOrder) WITH po, datetime(po.poDate).year AS year WITH year, sum(po.poAmount) AS yearlySpend WITH collect({{year: year, spend: yearlySpend}}) AS yearlyData UNWIND range(0, size(yearlyData) - 2) AS i WITH yearlyData[i] AS currentYear, yearlyData[i+1] AS previousYear WHERE currentYear.year > previousYear.year RETURN currentYear.year AS year, currentYear.spend AS totalSpend, currentYear.spend - previousYear.spend AS yearOverYearChange ORDER BY year DESC years",
+    },
+    {
         "question": "How many POs are tied to contracts that are ending this year?",
         "query": "WITH datetime().year AS currentYear MATCH (po:PurchaseOrder)-[:ISSUED_TO]->(s:Supplier)-[:UNDER_CONTRACT]->(c:Contract) WHERE toInteger(split(c.contractEndDate, '/')[2]) = currentYear RETURN count(DISTINCT po) AS NumberOfPOs, currentYear AS Year",
+    },
+    {
+        "question": "who is the cheapest supplier in cloud migration category?",
+        "query": "MATCH (c:Category {{categoryName: 'Cloud Migration'}})<-[:BELONGS_TO_CATEGORY]-(s:Service)<-[:PROVIDES_SERVICE]-(sup:Supplier) MATCH (po:PurchaseOrder)-[:INCLUDES_SERVICE]->(s) RETURN sup.supplierName AS supplier, MIN(po.poAmount) AS cheapestPOAmount ORDER BY cheapestPOAmount ASC LIMIT 1",
     },
     {
         "question": "How many active contracts do I have with suppliers, and what is their total value?",
@@ -31,10 +43,7 @@ examples = [
         "question": "what is the department wise total spend?",
         "query": "MATCH (d:Department)-[:SPEND_BY_DEPARTMENT]->(po:PurchaseOrder) WITH d.name AS departmentName, collect(po) AS purchaseOrders UNWIND purchaseOrders AS po WITH departmentName, sum(po.poAmount) AS totalSpend RETURN departmentName, totalSpend, 'USD' AS currencyCode ORDER BY totalSpend DESC",
     },
-    {
-        "question": "Which parent category has the highest total spend?",
-        "query": "MATCH (pc:ParentCategory)-[:SPEND_PARENT_CATEGORY]->(po:PurchaseOrder)WITH pc, sum(po.poAmount) AS totalSpendRETURN pc.parentCategoryName AS ParentCategory,       totalSpend,       'USD' AS CurrencyORDER BY totalSpend DESCLIMIT 1",
-    },
+    
     {
         "question": "Which parent category has the highest total spend?",
         "query": "MATCH (pc:ParentCategory)-[:SPEND_PARENT_CATEGORY]->(po:PurchaseOrder) WITH pc, sum(po.poAmount) AS totalSpend RETURN pc.parentCategoryName AS ParentCategory, totalSpend, 'USD' AS Currency ORDER BY totalSpend DESC LIMIT 1",

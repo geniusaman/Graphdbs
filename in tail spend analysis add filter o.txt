@@ -1,0 +1,24 @@
+in tail spend analysis add filter overall spend ranges and tail spend ranges
+in the subcategory graph add main spend and tail spend both and in supplier table give option for tail spend and main spend and non contracted spend
+ in general filters add quarter and month
+add graph - contact and noncontract spend by category and remove quarter graph
+add payment term by count suppliers graph user the tooltip to show the name of supplier
+
+quarterly discount amount and also from which supplier its receiving
+
+subcategory - main spend and tail spend 
+main spend- purchase frequency graph, main spend graph, noncontracted spend graph
+tail spend- purchase frequency graph, tail spend graph, noncontracted spend graph
+ comparison_metrics = supplier_data.groupby('supplier_name').agg(
+    avg_unit_price=('unit_price', 'mean'),
+    avg_rating=('supplier_rating', 'mean'),
+    avg_delivery_time=('avg_delivery_time', 'mean'),
+    total_spend=('totalcost', 'sum'),
+    total_quantity=('quantity', 'sum'),
+    no_of_transactions=('purchase_id', 'size'),  # Add number of transactions
+    has_contract=('contract_id', lambda x: 'Yes' if x.notna().any() else 'No')  # Check for contract presence
+).reset_index()
+
+
+
+price negotiation

@@ -62,7 +62,8 @@ prompt = FewShotPromptTemplate(
             Note: Do not include any explanations or apologies in your responses.
             Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
             Do not include any text except the generated Cypher statement.
-            The date format should be YYYY-MM-DD.
+            The date format should be MM/dd/yyyy.
+            Always use apoc.date.parse() to parse the date.
             If the generated Cypher query contains a date, convert it to date format instead of directly matching with a string. Example: (d.date >= date("2023-01-01") AND d.date <= date("2023-12-31")).
             Before making any Cypher query, please check the schema to match the cases of the nodes and relationships strictly.
             Double check the Cypher query before executing it. It should be syntactically correct.
