@@ -34,51 +34,51 @@ llm = ChatGroq(
 # llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
 
-# print(graph.schema)
+print(graph._enhanced_schema)
 
-example_selector = SemanticSimilarityExampleSelector.from_examples(
-    examples,
-    OpenAIEmbeddings(),
-    Neo4jVector,
-    k=5,
-    input_keys=["question"],
-)
-# print(example_selector.select_examples({"question": "how many artists are there?"}))
+# example_selector = SemanticSimilarityExampleSelector.from_examples(
+#     examples,
+#     OpenAIEmbeddings(),
+#     Neo4jVector,
+#     k=5,
+#     input_keys=["question"],
+# )
+# # print(example_selector.select_examples({"question": "how many artists are there?"}))
 
-example_prompt = PromptTemplate.from_template(
-    "User input: {question}\nCypher query: {query}"
-)
+# example_prompt = PromptTemplate.from_template(
+#     "User input: {question}\nCypher query: {query}"
+# )
 
-prompt = FewShotPromptTemplate(
-    examples=examples,
-    example_prompt=example_prompt,
-    prefix="""Task: Generate a Cypher statement to query a graph database.
-            Instructions:
-            You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.
-            Use only the provided relationship types and properties in the schema.
-            Do not use any other relationship types or properties that are not provided.
-            Schema:
-            {schema}
+# prompt = FewShotPromptTemplate(
+#     examples=examples,
+#     example_prompt=example_prompt,
+#     prefix="""Task: Generate a Cypher statement to query a graph database.
+#             Instructions:
+#             You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.
+#             Use only the provided relationship types and properties in the schema.
+#             Do not use any other relationship types or properties that are not provided.
+#             Schema:
+#             {schema}
 
-            Note: Do not include any explanations or apologies in your responses.
-            Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
-            Do not include any text except the generated Cypher statement.
-            The date format should be YYYY-MM-DD.
-            If the generated Cypher query contains a date, convert it to date format instead of directly matching with a string. Example: (d.date >= date("2023-01-01") AND d.date <= date("2023-12-31")).
-            Before making any Cypher query, please check the schema to match the cases of the nodes and relationships strictly.
-            Double check the Cypher query before executing it. It should be syntactically correct.
+#             Note: Do not include any explanations or apologies in your responses.
+#             Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
+#             Do not include any text except the generated Cypher statement.
+#             The date format should be YYYY-MM-DD.
+#             If the generated Cypher query contains a date, convert it to date format instead of directly matching with a string. Example: (d.date >= date("2023-01-01") AND d.date <= date("2023-12-31")).
+#             Before making any Cypher query, please check the schema to match the cases of the nodes and relationships strictly.
+#             Double check the Cypher query before executing it. It should be syntactically correct.
 
-            Below are a number of examples of questions and their corresponding Cypher queries:"""
-,
-    suffix="User input: {question}\nCypher query: ",
-    input_variables=["question", "schema"],
-)
+#             Below are a number of examples of questions and their corresponding Cypher queries:"""
+# ,
+#     suffix="User input: {question}\nCypher query: ",
+#     input_variables=["question", "schema"],
+# )
 
-# print(prompt.format(question="How many artists are there?", schema="foo"))
+# # print(prompt.format(question="How many artists are there?", schema="foo"))
 
-chain = GraphCypherQAChain.from_llm(       
-    graph=enhanced_graph, llm=llm, cypher_prompt=prompt, verbose=True, allow_dangerous_requests=True
-)
+# chain = GraphCypherQAChain.from_llm(       
+#     graph=enhanced_graph, llm=llm, cypher_prompt=prompt, verbose=True, allow_dangerous_requests=True
+# )
 
-print(chain.invoke("Which parent category has the highest total spend?"))
+# print(chain.invoke("Which parent category has the highest total spend?"))
 

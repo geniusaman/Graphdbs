@@ -52,6 +52,11 @@ examples = [
         "question": "How many suppliers are associated with each parent category?",
         "query": "MATCH (pc:ParentCategory)<-[:BELONGS_TO_PARENT_CATEGORY]-(:Category)<-[:BELONGS_TO_CATEGORY]-(:Service)<-[:PROVIDES_SERVICE]-(s:Supplier) WITH pc, count(DISTINCT s) AS supplierCount RETURN pc.parentCategoryName AS ParentCategory, supplierCount ORDER BY supplierCount DESC",
     },
+    {
+        "question": "the average annual growth rate, the highest/lowest spend year",
+        "query": "MATCH (po:PurchaseOrder) WITH datetime(po.poDate).year as year, sum(po.poAmount) as yearly_spend WITH year, yearly_spend ORDER BY year WITH collect({{year: year, spend: yearly_spend}}) as years_data WITH years_data, reduce(s = {{year: 0, spend: 0}}, x in years_data | CASE WHEN x.spend > s.spend THEN x ELSE s END) as highest_spend, reduce(s = {{year: 0, spend: toInteger(9999999999)}}, x in years_data | CASE WHEN x.spend < s.spend THEN x ELSE s END) as lowest_spend UNWIND range(0, size(years_data)-2) as i WITH years_data, i, highest_spend, lowest_spend WITH years_data, highest_spend, lowest_spend, ((years_data[i+1].spend - years_data[i].spend) * 100.0 / years_data[i].spend) as growth_rate WITH highest_spend, lowest_spend, avg(growth_rate) as avg_growth_rate RETURN round(avg_growth_rate * 100) / 100 as average_annual_growth_rate, highest_spend.year as highest_spend_year, highest_spend.spend as highest_spend_amount, lowest_spend.year as lowest_spend_year, lowest_spend.spend as lowest_spend_amount",
+    },
+
 
 
     
