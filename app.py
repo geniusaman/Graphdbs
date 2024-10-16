@@ -26,6 +26,7 @@ enhanced_graph = Neo4jGraph(
     url=NEO4J_URI, username=NEO4J_USERNAME, password=NEO4J_PASSWORD, enhanced_schema=True,
 )
 
+schema = enhanced_graph._enhanced_schema
 # Initialize the LLM (Groq)
 llm = ChatGroq(
     model="llama-3.1-70b-versatile",
@@ -46,6 +47,10 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 
 example_prompt = PromptTemplate.from_template(
     "User input: {question}\nCypher query: {query}"
+)
+qa_prompt = PromptTemplate(
+    template = "User input: {question}\nCypher query result: {context}" + "\n" + f"Schema:{schema}" + "\nbased on the User input, Cypher query and Cypher query result form nice and human \nunderstandable answers\nDo not add any other information that wasn't part of the query and result, and use\nwhere ever required alway use($,',',%,-), tables and graphs to structured the output\nAlways interact with user,\nAlways approch the user to ask the comprehensive and logical questions related to Data stored in db(schema)\nif context is empty that means user should ask the correct questions which is related to stored Data in garph db(schema) and you try to fine grain the question with user if the question doesnot meets the schema.",
+    input_variables = ['question','context'],
 )
 
 prompt = FewShotPromptTemplate(
@@ -74,10 +79,13 @@ prompt = FewShotPromptTemplate(
     input_variables=["question", "schema"],
 )
 
+Str = "You are an assistant that helps to form nice and human \nunderstandable answers based on the provided information from tools.\nDo not add any other information that wasn't present in the tools, and use \nvery concise style in interpreting results!\n"
+
 # Initialize the chain
 chain = GraphCypherQAChain.from_llm(
-    graph=enhanced_graph, llm=llm, cypher_prompt=prompt, verbose=True, allow_dangerous_requests=True
+    graph=enhanced_graph, llm=llm, cypher_prompt=prompt, validate_cypher =True, qa_prompt=qa_prompt, function_response_system=Str, verbose=True, allow_dangerous_requests=True
 )
+
 
 # Streamlit App Interface
 st.title("Graph Cypher Query Assistant")
