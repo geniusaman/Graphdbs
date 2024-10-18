@@ -1,0 +1,55 @@
+// Create Department self-relationships on PurchaseOrder nodes
+MATCH (po:PurchaseOrder)
+WHERE po.department IS NOT NULL
+WITH po, po.department AS deptName
+MERGE (po)-[:ISSUED_BY {department: deptName}]->(po)
+
+// Create Requester self-relationships on PurchaseOrder nodes
+MATCH (po:PurchaseOrder)
+WHERE po.requester IS NOT NULL
+WITH po, po.requester AS requesterName
+MERGE (po)-[:REQUESTED_BY {requester: requesterName}]->(po)
+
+// Create Currency self-relationships on PurchaseOrder nodes
+MATCH (po:PurchaseOrder)
+WHERE po.currency IS NOT NULL
+WITH po, po.currency AS currencyCode
+MERGE (po)-[:USES_CURRENCY {currency: currencyCode}]->(po)
+
+// 14. Geographical Location Self-Relationship
+MATCH (s:Supplier)
+WHERE s.country IS NOT NULL
+CREATE (s)-[:LOCATED_IN {
+    country: s.country,
+    city: s.city,
+    state: s.state,
+    zip_code: s.zip_code
+}]->(s)
+
+// Create Date self-relationships on PurchaseOrder nodes
+MATCH (po:PurchaseOrder)
+WHERE po.po_date IS NOT NULL
+MERGE (d:Date {date: date(datetime(po.po_date))})  // Create or match a Date node
+CREATE (po)-[:CREATED_ON]->(d)  // Relationship from PurchaseOrder to Date
+
+
+MATCH (s:Supplier), (p:PurchaseOrder)
+WHERE s.supplier_name = p.supplier_name
+CREATE (s)-[:PROVIDES_CATEGORY {category: p.category}]->(p)
+
+MATCH (s:Supplier),(p:PurchaseOrder)
+WHERE s.supplier_name = p.supplier_name
+CREATE (s)-[:PROVIDES_PARENT_CATEGORY {parent_category:p.parent_category}]->(p)
+
+
+MATCH (s:Supplier), (c:Catalog)
+WHERE s.supplier_id = c.supplier_id
+CREATE (s)-[r:HAS_CATALOG {catalog_id: c.catalog_id}]->(c)
+
+MATCH (s:Supplier), (c:Catalog), (ct:Contract)
+WHERE s.supplier_id = c.supplier_id AND s.supplier_id = ct.supplier_id
+CREATE (s)-[r:HAS_CONTRACT {contract_id: ct.contract_id}]->(ct)
+
+
+
+
