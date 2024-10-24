@@ -312,7 +312,7 @@ def generate_response(user_input, schema):
             Schema: {schema}
             
             Form a clear, human-understandable answer that:
-            - Display Each and every information from the Result that is the current answer of the User input. Do not Include Previous conversation in your response.
+            - Give the Answer of the User input based on the Result. Do not Include Previous conversation in your response.
             - Uses appropriate formatting ($,',',%,-) and tables
             - Dont Include Schema Information in your response
             """)
