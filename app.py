@@ -325,7 +325,7 @@ def generate_response(user_input, schema):
                     "chat_history": RunnableLambda(lambda _: memory.chat_memory.messages)
                 }
                 | present_prompt
-                | groq_llm
+                | llm_cohere
                 | StrOutputParser()
             )
             
