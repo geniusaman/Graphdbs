@@ -142,6 +142,10 @@ examples = [
          "query":"MATCH (po:PurchaseOrder)-[:CREATED_ON]->(d:Date) WHERE po.service_name = 'Network Services' AND d.date >= date() - duration('P1Y') RETURN d.date as order_date, po.fixed_cost as service_cost, po.supplier_name ORDER BY order_date DESC",
  
     },
+    {   "question":"Do we have contract with Tech Mahindra?",
+         "query":"MATCH (c:Contract) WHERE c.supplier_name = 'Tech Mahindra' RETURN c.contract_id, c.contract_start_date, c.contract_end_date, c.contract_value, c.contract_term, c.category, c.description, c.supplier_name;",
+ 
+    },
     ]
 
 print(examples)
