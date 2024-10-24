@@ -7,3 +7,4 @@ neo4j
 streamlit
 streamlit_chat
 langchain_cohere 
+langchain_anthropic 
