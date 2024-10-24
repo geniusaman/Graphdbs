@@ -114,6 +114,30 @@ examples = [
          "query":"MATCH (s:Supplier)-[r:OFFERS_PRODUCT]->(po:PurchaseOrder) WHERE po.product_name CONTAINS 'HP Elite 800 G6' RETURN DISTINCT s.supplier_name as Supplier, s.supplier_id as SupplierID, po.product_name as Product, po.unit_price as UnitPrice, po.currency as Currency",
  
     },
+    {   "question":"the suppliers for cloud migration catogery whats their price history?",
+         "query":"MATCH (s:Supplier)-[r]->(po:PurchaseOrder) WHERE (po.category = 'Cloud Migration' OR po.parent_category = 'Cloud Migration') AND type(r) IN ['OFFERS_SERVICES', 'OFFERS_PRODUCT'] MATCH (po)-[:CREATED_ON]->(d:Date) RETURN s.supplier_name as Supplier, po.po_number as PurchaseOrder, CASE type(r) WHEN 'OFFERS_SERVICES' THEN po.service_name WHEN 'OFFERS_PRODUCT' THEN po.product_name END as ItemName, type(r) as OfferingType, po.category as Category, po.po_amount as Amount, po.currency as Currency, d.date as OrderDate ORDER BY d.date DESC",
+ 
+    },
+    {   "question":"for supplier Tech Mahindra whats their price history?",
+         "query":"MATCH (s:Supplier)-[r]->(po:PurchaseOrder) WHERE s.supplier_name = 'Tech Mahindra' AND type(r) IN ['OFFERS_SERVICES', 'OFFERS_PRODUCT'] MATCH (po)-[:CREATED_ON]->(d:Date) RETURN po.po_number as PurchaseOrder, CASE type(r) WHEN 'OFFERS_SERVICES' THEN po.service_name WHEN 'OFFERS_PRODUCT' THEN po.product_name END as ItemName, type(r) as OfferingType, po.category as Category, po.po_amount as Amount, po.currency as Currency, d.date as OrderDate ORDER BY d.date DESC",
+ 
+    },
+    {   "question":"how much time they took to complete a cloud migration?",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.category = 'Cloud Migration' RETURN po.po_number, po.supplier_name, po.service_name, po.service_start_date, po.service_end_date, duration.between(po.service_start_date, po.service_end_date).days as days_taken  ORDER BY days_taken DESC",
+ 
+    },
+     {   "question":"How long did Wipro take to complete their cloud migration projects?",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.category = 'Cloud Migration' AND po.supplier_name = 'Wipro' RETURN po.po_number, po.supplier_name, po.service_name, po.service_start_date, po.service_end_date, duration.between(po.service_start_date, po.service_end_date).days as days_taken ORDER BY days_taken DESC",
+ 
+    },
+    {   "question":"suggest me a buyer or requester who have taken their service in  cloud migration",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.category = 'Cloud Migration' RETURN DISTINCT po.requester ORDER BY po.requester LIMIT 5",
+ 
+    },
+    {   "question":"the suppliers for cloud migration catogery are they competitive",
+         "query":"MATCH (s:Supplier)-[r:PROVIDES_CATEGORY]->(po:PurchaseOrder) WHERE r.category = 'Cloud Migration' WITH s, count(po) as number_of_orders, avg(po.po_amount) as avg_order_value, s.financial_score as financial_score, s.sustainability_score as sustainability_score RETURN s.supplier_name as Supplier, financial_score as Financial_Score, sustainability_score as Sustainability_Score, number_of_orders as Number_of_Orders, round(avg_order_value, 2) as Average_Order_Value ORDER BY financial_score DESC;",
+ 
+    },
     ]
 
 print(examples)
