@@ -304,15 +304,15 @@ def generate_response(user_input, schema):
 
             # if satisfaction_level:
             present_prompt = ChatPromptTemplate.from_template("""
-            Previous conversation:
+            ##Previous conversation:
             {chat_history} 
                                                                 
-            User input: {question}
-            Result: {result}
-            Schema: {schema}
+            ##User input: {question}
+            ##Result: {result}
+            ##Schema: {schema}
             
-            Form a clear, human-understandable answer that:
-            - Give the Answer of the User input based on the Result. Do not Include Previous conversation in your response.
+            ###Form a clear, human-understandable answer that:
+            - Give the Answer of the User input based on the Result. Include Each and Every Information From Result. Do not Include Previous conversation in your response.
             - Uses appropriate formatting ($,',',%,-) and tables
             - Dont Include Schema Information in your response
             """)
