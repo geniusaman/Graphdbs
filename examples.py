@@ -122,8 +122,8 @@ examples = [
          "query":"MATCH (s:Supplier)-[r]->(po:PurchaseOrder) WHERE s.supplier_name = 'Tech Mahindra' AND type(r) IN ['OFFERS_SERVICES', 'OFFERS_PRODUCT'] MATCH (po)-[:CREATED_ON]->(d:Date) RETURN po.po_number as PurchaseOrder, CASE type(r) WHEN 'OFFERS_SERVICES' THEN po.service_name WHEN 'OFFERS_PRODUCT' THEN po.product_name END as ItemName, type(r) as OfferingType, po.category as Category, po.po_amount as Amount, po.currency as Currency, d.date as OrderDate ORDER BY d.date DESC",
  
     },
-    {   "question":"how much time they took to complete a cloud migration?",
-         "query":"MATCH (po:PurchaseOrder) WHERE po.category = 'Cloud Migration' RETURN po.po_number, po.supplier_name, po.service_name, po.service_start_date, po.service_end_date, duration.between(po.service_start_date, po.service_end_date).days as days_taken  ORDER BY days_taken DESC",
+    {   "question":"how much time they took to complete a Ground Freight?",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.category = 'Ground Freight' WITH po, CASE WHEN po.service_start_date IS NOT NULL AND po.service_end_date IS NOT NULL THEN duration.between(po.service_start_date, po.service_end_date).days WHEN po.pickup_date IS NOT NULL AND po.delivery_date IS NOT NULL THEN duration.between(po.pickup_date, po.delivery_date).days WHEN po.delivery_date IS NOT NULL AND po.actual_receipt_date IS NOT NULL THEN duration.between(po.delivery_date, po.actual_receipt_date).days END as days_taken RETURN po.po_number, po.supplier_name, CASE WHEN po.service_name IS NOT NULL THEN po.service_name WHEN po.shipping_method IS NOT NULL THEN po.shipping_method ELSE po.product_name END as item_name, CASE WHEN po.service_start_date IS NOT NULL THEN po.service_start_date WHEN po.pickup_date IS NOT NULL THEN po.pickup_date ELSE po.delivery_date END as start_date, CASE WHEN po.service_end_date IS NOT NULL THEN po.service_end_date WHEN po.delivery_date IS NOT NULL AND po.pickup_date IS NOT NULL THEN po.delivery_date ELSE po.actual_receipt_date END as end_date, days_taken ORDER BY days_taken DESC;",
  
     },
      {   "question":"How long did Wipro take to complete their cloud migration projects?",
@@ -136,6 +136,10 @@ examples = [
     },
     {   "question":"the suppliers for cloud migration catogery are they competitive",
          "query":"MATCH (s:Supplier)-[r:PROVIDES_CATEGORY]->(po:PurchaseOrder) WHERE r.category = 'Cloud Migration' WITH s, count(po) as number_of_orders, avg(po.po_amount) as avg_order_value, s.financial_score as financial_score, s.sustainability_score as sustainability_score RETURN s.supplier_name as Supplier, financial_score as Financial_Score, sustainability_score as Sustainability_Score, number_of_orders as Number_of_Orders, round(avg_order_value, 2) as Average_Order_Value ORDER BY financial_score DESC;",
+ 
+    },
+    {   "question":"What is the price history of Network Services across all suppliers over the last year?",
+         "query":"MATCH (po:PurchaseOrder)-[:CREATED_ON]->(d:Date) WHERE po.service_name = 'Network Services' AND d.date >= date() - duration('P1Y') RETURN d.date as order_date, po.fixed_cost as service_cost, po.supplier_name ORDER BY order_date DESC",
  
     },
     ]
