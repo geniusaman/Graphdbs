@@ -6,4 +6,4 @@ langchain_groq
 neo4j
 streamlit
 streamlit_chat
-
+langchain_cohere 
