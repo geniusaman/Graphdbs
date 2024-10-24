@@ -434,9 +434,12 @@ if user_input:
         # Assume it's a plain text response
         st.session_state["messages"].append({"role": "bot", "content": response})
 
-# Display chat messages
-for msg in st.session_state["messages"]:
-    if msg["role"] == "user":
-        message(msg["content"], is_user=True)
-    else:
-        message(msg["content"])
+# Display chat messages in reverse order (latest first)
+messages = reversed(st.session_state["messages"])
+# Group messages into pairs
+message_pairs = list(zip(messages, messages))
+
+# Display each pair (user message followed by bot response)
+for bot_msg, user_msg in message_pairs:
+    message(user_msg["content"], is_user=True)
+    message(bot_msg["content"])
