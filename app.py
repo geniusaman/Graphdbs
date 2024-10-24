@@ -135,7 +135,7 @@ Str = "You are an assistant that helps to form nice and human \nunderstandable a
 # Initialize the chain
 chain1 = GraphCypherQAChain.from_llm(
     graph=enhanced_graph,
-    llm=open_llm,
+    llm=groq_llm,
     cypher_prompt=prompt,
     validate_cypher=True,
     function_response_system=Str,
