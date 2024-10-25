@@ -79,7 +79,7 @@ schema = enhanced_graph.schema
 
 # Initialize LLM
 groq_llm = ChatGroq(
-    model="llama-3.2-90b-vision-preview",
+    model=" llama-3.1-70b-versatile",
 )
 # co = cohere.Client('Cohere-Api-Key')
 open_llm = ChatOpenAI(model="gpt-3.5-turbo")
@@ -135,7 +135,7 @@ Str = "You are an assistant that helps to form nice and human \nunderstandable a
 # Initialize the chain
 chain1 = GraphCypherQAChain.from_llm(
     graph=enhanced_graph,
-    llm=llm_cohere,
+    llm=groq_llm,
     cypher_prompt=prompt,
     validate_cypher=True,
     function_response_system=Str,
@@ -325,7 +325,7 @@ def generate_response(user_input, schema):
                     "chat_history": RunnableLambda(lambda _: memory.chat_memory.messages)
                 }
                 | present_prompt
-                | open_llm
+                | llm_cohere
                 | StrOutputParser()
             )
             
