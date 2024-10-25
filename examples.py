@@ -154,6 +154,10 @@ examples = [
          "query":"MATCH (s:Supplier)-[r:SUPPLIES]->(po:PurchaseOrder) WHERE po.product_name CONTAINS '410 Stainless Round Bar 1' WITH DISTINCT s, COUNT(po) as order_count, COLLECT(DISTINCT {{ po_number: po.po_number, quantity: po.quantity, unit_price: po.unit_price, order_date: po.po_date }}) as order_details RETURN 'Active Supplier' as status, s.supplier_name as supplier_name, s.supplier_id as supplier_id, s.country as country, s.contact_number as contact, s.email as email, s.financial_score as financial_score, s.sustainability_score as sustainability_score, order_count as total_orders, order_details as purchase_details UNION MATCH (s:Supplier)-[:OFFERS_PRODUCT]->(c:Catalog) WHERE c.product_name CONTAINS '410 Stainless Round Bar 1' AND NOT EXISTS {{ MATCH (s)-[:SUPPLIES]->(:PurchaseOrder {{product_name: '410 Stainless Round Bar 1'}}) }} RETURN 'Catalog Only' as status, s.supplier_name as supplier_name, s.supplier_id as supplier_id, s.country as country, s.contact_number as contact, s.email as email, s.financial_score as financial_score, s.sustainability_score as sustainability_score, 0 as total_orders;",
  
     },
+    {   "question":"which po's are due in next 3 weeks for 410 Stainless Round Bar 1 product",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '410 Stainless Round Bar 1' AND po.delivery_date >= datetime() AND po.delivery_date <= datetime() + duration('P21D') RETURN po.po_number, po.supplier_name, po.quantity, po.unit_price, po.po_amount, po.delivery_date ORDER BY po.delivery_date",
+ 
+    },
     ]
 
 print(examples)
