@@ -79,7 +79,7 @@ schema = enhanced_graph.schema
 
 # Initialize LLM
 groq_llm = ChatGroq(
-    model="llama-3.1-70b-versatile",
+    model="llama-3.1-8b-instant",
 )
 # co = cohere.Client('Cohere-Api-Key')
 open_llm = ChatOpenAI(model="gpt-3.5-turbo")
