@@ -146,6 +146,10 @@ examples = [
          "query":"MATCH (c:Contract) WHERE c.supplier_name = 'Tech Mahindra' RETURN c.contract_id, c.contract_start_date, c.contract_end_date, c.contract_value, c.contract_term, c.category, c.description, c.supplier_name;",
  
     },
+    {   "question":"how many suppliers have contracts in cloud migration category and what are contract details",
+         "query":"MATCH (c:Contract) WHERE c.category = 'Cloud Migration' RETURN c.supplier_name AS SupplierName, c.contract_id AS ContractID, c.contract_utilised AS ContractUtilized, toString(c.contract_start_date) AS StartDate, toString(c.contract_end_date) AS EndDate, c.contract_term AS ContractTerm ORDER BY StartDate DESC;",
+ 
+    },
     ]
 
 print(examples)
