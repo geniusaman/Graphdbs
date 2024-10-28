@@ -163,7 +163,7 @@ examples = [
  
     },
     {   "question":"Is there any potential low stock alert for product 316 Stainless Square Bar",
-         "query":"MATCH (i:InventoryItem)-[:CURRENT_STOCK_LEVEL]->(sl:InventoryStockLevel), (i:InventoryItem)-[:INVENTORY_ALERTS]->(ac:InventoryAlertConfig), (e:Email) WHERE i.description CONTAINS '316 Stainless Square Bar 1' RETURN e.mailBody as message;",
+         "query":"MATCH (e:Email) RETURN e.mailBody as message;",
  
     },
     ]
