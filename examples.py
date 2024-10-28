@@ -158,6 +158,10 @@ examples = [
          "query":"MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '410 Stainless Round Bar 1' AND po.delivery_date >= datetime() AND po.delivery_date <= datetime() + duration('P21D') RETURN po.po_number, po.supplier_name, po.quantity, po.unit_price, po.po_amount, po.delivery_date ORDER BY po.delivery_date",
  
     },
+    {   "question":"Is there any delayed request for this 316 Stainless Square Bar product",
+         "query":"MATCH (e:Email) WHERE e.subject CONTAINS 'PO Change Approval Request' AND e.mailBody CONTAINS 'PO Change Approval Request' AND e.originalDeliveryDate IS NOT NULL AND e.requestedDeliveryDate IS NOT NULL WITH e MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '316 Stainless Square Bar 1' AND po.po_number = e.poNumber RETURN DISTINCT e.poNumber as PO_Number, e.originalDeliveryDate as Original_Delivery_Date, e.requestedDeliveryDate as Requested_Delivery_Date, e.sender as Sender, e.recipient as Recipient, e.sentDate as Email_Sent_Date, po.product_name as Product_Name;",
+ 
+    },
     ]
 
 print(examples)
