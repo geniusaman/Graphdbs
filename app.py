@@ -202,7 +202,7 @@ def generate_response(user_input, schema):
             "chat_history": RunnableLambda(lambda _: memory.chat_memory.messages)
         }
         | validation_prompt
-        | llm_cohere
+        | open_llm
         | StrOutputParser()
     )
 
