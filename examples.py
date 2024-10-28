@@ -162,6 +162,10 @@ examples = [
          "query":"MATCH (e:Email) WHERE e.subject CONTAINS 'PO Change Approval Request' AND e.mailBody CONTAINS 'PO Change Approval Request' AND e.originalDeliveryDate IS NOT NULL AND e.requestedDeliveryDate IS NOT NULL WITH e MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '316 Stainless Square Bar 1' AND po.po_number = e.poNumber RETURN DISTINCT e.poNumber as PO_Number, e.originalDeliveryDate as Original_Delivery_Date, e.requestedDeliveryDate as Requested_Delivery_Date, e.sender as Sender, e.recipient as Recipient, e.sentDate as Email_Sent_Date, po.product_name as Product_Name, e.mailBody as Mail_Body;",
  
     },
+    {   "question":"Is there any potential low stock alert for product 316 Stainless Square Bar",
+         "query":"MATCH (i:InventoryItem)-[:CURRENT_STOCK_LEVEL]->(sl:InventoryStockLevel), (i:InventoryItem)-[:INVENTORY_ALERTS]->(ac:InventoryAlertConfig), (e:Email) WHERE i.description CONTAINS '316 Stainless Square Bar 1' RETURN e.mailBody as message;",
+ 
+    },
     ]
 
 print(examples)
