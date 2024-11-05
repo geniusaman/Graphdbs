@@ -21,7 +21,7 @@ import os
 import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
- from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 
 
 
