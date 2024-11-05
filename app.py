@@ -21,7 +21,7 @@ import os
 import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings import CohereEmbeddings
 
 
 
@@ -104,9 +104,9 @@ llm_sonnete = ChatAnthropic(
 #     k=5,
 #     input_keys=["question"],
 # )
-example_selector_hf = SemanticSimilarityExampleSelector.from_examples(
+example_selector_cohere = SemanticSimilarityExampleSelector.from_examples(
     examples,
-    HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
+    CohereEmbeddings(cohere_api_key=COHERE_API_KEY),
     Neo4jVector,
     k=5,
     input_keys=["question"],
