@@ -21,7 +21,14 @@ import os
 import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
- 
+ from langchain.embeddings import (
+    HuggingFaceEmbeddings,
+    CohereEmbeddings,
+    SentenceTransformerEmbeddings,
+    HuggingFaceInstructEmbeddings,
+    JinaEmbeddings
+)
+
 
 
 st.set_page_config(layout="wide")
@@ -96,14 +103,20 @@ llm_sonnete = ChatAnthropic(
 
 
 # Set up example selector
-example_selector = SemanticSimilarityExampleSelector.from_examples(
+# example_selector = SemanticSimilarityExampleSelector.from_examples(
+#     examples,
+#     OpenAIEmbeddings(),
+#     Neo4jVector,
+#     k=5,
+#     input_keys=["question"],
+# )
+example_selector_hfi = SemanticSimilarityExampleSelector.from_examples(
     examples,
-    OpenAIEmbeddings(),
+    HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large"),
     Neo4jVector,
     k=5,
     input_keys=["question"],
 )
-
 example_prompt = PromptTemplate.from_template(
     "User input: {question}\nCypher query: {query}"
 )
