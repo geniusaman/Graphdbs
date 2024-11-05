@@ -104,9 +104,9 @@ llm_sonnete = ChatAnthropic(
 #     k=5,
 #     input_keys=["question"],
 # )
-example_selector_hfi = SemanticSimilarityExampleSelector.from_examples(
+example_selector_hf = SemanticSimilarityExampleSelector.from_examples(
     examples,
-    HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-large"),
+    HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
     Neo4jVector,
     k=5,
     input_keys=["question"],
