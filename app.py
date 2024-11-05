@@ -104,7 +104,7 @@ llm_sonnete = ChatAnthropic(
 #     k=5,
 #     input_keys=["question"],
 # )
-example_selector_cohere = SemanticSimilarityExampleSelector.from_examples(
+example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples,
     CohereEmbeddings(
         cohere_api_key=COHERE_API_KEY,
