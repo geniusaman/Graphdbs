@@ -9,3 +9,4 @@ streamlit_chat
 langchain_cohere 
 langchain_anthropic 
 sentence-transformers
+langchain-cohere
