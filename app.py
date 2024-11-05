@@ -21,7 +21,7 @@ import os
 import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
-from langchain.embeddings import CohereEmbeddings
+from langchain_community.embeddings import CohereEmbeddings
 
 
 
@@ -106,7 +106,11 @@ llm_sonnete = ChatAnthropic(
 # )
 example_selector_cohere = SemanticSimilarityExampleSelector.from_examples(
     examples,
-    CohereEmbeddings(cohere_api_key=COHERE_API_KEY),
+    CohereEmbeddings(
+        cohere_api_key=COHERE_API_KEY,
+        model="embed-english-v3.0",  # specify a model
+        client=None  # this is optional, the client will be created automatically
+    ),
     Neo4jVector,
     k=5,
     input_keys=["question"],
