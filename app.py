@@ -107,8 +107,7 @@ llm_sonnete = ChatAnthropic(
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples,
     CohereEmbeddings(
-        cohere_api_key=COHERE_API_KEY,
-        model_name="embed-multilingual-v3.0"  # Note: model_name instead of model
+        model="embed-multilingual-v3.0",  # Note: model_name instead of model
     ),
     Neo4jVector,
     k=5,
