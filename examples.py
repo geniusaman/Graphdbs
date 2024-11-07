@@ -106,10 +106,10 @@ examples = [
          "query":"MATCH (s:Supplier)-[sup:SUPPLIES]->(po:PurchaseOrder) WHERE po.category = 'Stainless Steel' RETURN DISTINCT s.supplier_name as Supplier, po.product_name as ProductName, po.unit_price as UnitPrice ORDER BY s.supplier_name",
  
     },
-    {   "question":"among all stainless steel category suppliers which suppliers are having contract?",
-         "query":"MATCH (s:Supplier)-[:SUPPLIES]->(po:PurchaseOrder) WHERE po.category = 'Stainless Steel' OPTIONAL MATCH (s)-[:SUPPLIES]->(c:Contract) RETURN DISTINCT s.supplier_name as Supplier, CASE WHEN c IS NULL THEN 'No Contract Available' ELSE c.contract_id END as ContractStatus ORDER BY s.supplier_name",
+#     {   "question":"among all stainless steel category suppliers which suppliers are having contract?",
+#          "query":"MATCH (s:Supplier)-[:SUPPLIES]->(po:PurchaseOrder) WHERE po.category CONTAINS 'Stainless Steel' OPTIONAL MATCH (s)-[:SUPPLIES]->(c:Contract) RETURN DISTINCT s.supplier_name as Supplier, CASE WHEN c IS NULL THEN 'No Contract Available' ELSE c.contract_id END as ContractStatus ORDER BY s.supplier_name",
  
-    },
+#     },
     {   "question":"Which supplier offer HP Elite 800 G6?",
          "query":"MATCH (s:Supplier)-[r:OFFERS_PRODUCT]->(po:PurchaseOrder) WHERE po.product_name CONTAINS 'HP Elite 800 G6' RETURN DISTINCT s.supplier_name as Supplier, s.supplier_id as SupplierID, po.product_name as Product, po.unit_price as UnitPrice, po.currency as Currency",
  
@@ -155,15 +155,19 @@ examples = [
  
     },
     {   "question":"which po's are due in next 3 weeks for 410 Stainless Round Bar 1 product",
-         "query":"MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '410 Stainless Round Bar 1' AND po.delivery_date >= datetime() AND po.delivery_date <= datetime() + duration('P21D') RETURN po.po_number, po.supplier_name, po.quantity, po.unit_price, po.po_amount, po.delivery_date ORDER BY po.delivery_date",
+         "query":"MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '410 Stainless Round Bar 1' AND po.delivery_date >= datetime() AND po.delivery_date <= datetime() + duration('P21D') RETURN po.po_number, po.supplier_name, po.quantity, po.unit_price, po.po_amount, po.delivery_date ,datetime() as current_date ORDER BY po.delivery_date",
  
     },
     {   "question":"Is there any delayed request for this 316 Stainless Square Bar product",
          "query":"MATCH (e:Email) WHERE e.subject CONTAINS 'PO Change Approval Request' AND e.mailBody CONTAINS 'PO Change Approval Request' AND e.originalDeliveryDate IS NOT NULL AND e.requestedDeliveryDate IS NOT NULL WITH e MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '316 Stainless Square Bar 1' AND po.po_number = e.poNumber RETURN DISTINCT e.poNumber as PO_Number, e.originalDeliveryDate as Original_Delivery_Date, e.requestedDeliveryDate as Requested_Delivery_Date, e.sender as Sender, e.recipient as Recipient, e.sentDate as Email_Sent_Date, po.product_name as Product_Name;",
  
     },
-    {   "question":"Is there any potential low stock alert in a Request for product 316 Stainless Square Bar",
-         "query":"MATCH (e:Email) RETURN e.mailBody as message;",
+    {   "question":"Is there any potential low stock alert in a Request for product 316 Stainless Square Bar 1",
+         "query": "MATCH (po:PurchaseOrder) WHERE po.product_name CONTAINS '316 Stainless Square Bar 1' MATCH (e:Email) WHERE e.poNumber = po.po_number AND e.mailBody CONTAINS 'Low Stock Alert' RETURN e.mailBody AS message;"
+ 
+    },
+    {   "question":"In the stainless steel category, which supplier should I negotiate for a better price and why?",
+         "query": "MATCH (s:Supplier)-[:SUPPLIES|OFFERS_PRODUCT]->(po:PurchaseOrder) WHERE po.category = 'Stainless Steel' WITH po.product_name AS Product, s.supplier_name AS SupplierName, COLLECT(DISTINCT po.unit_price) AS unit_prices, COLLECT(DISTINCT po.po_amount) AS po_amounts UNWIND unit_prices AS unit_price UNWIND po_amounts AS po_amount WITH Product, SupplierName, MIN(unit_price) AS LowestUnitPrice, MAX(unit_price) AS HighestUnitPrice, AVG(unit_price) AS AvgUnitPrice, MIN(po_amount) AS LowestPOAmount, MAX(po_amount) AS HighestPOAmount, AVG(po_amount) AS AvgPOAmount RETURN Product, SupplierName, LowestPOAmount, HighestPOAmount, AvgPOAmount, LowestUnitPrice, HighestUnitPrice, AvgUnitPrice"
  
     },
     ]
