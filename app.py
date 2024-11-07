@@ -22,6 +22,7 @@ import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
 from langchain_cohere import CohereEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 
@@ -67,6 +68,8 @@ NEO4J_USERNAME = os.environ["NEO4J_USERNAME"]
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 COHERE_API_KEY = os.environ["COHERE_API_KEY"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
+
 
 # Initialize Neo4j graph
 enhanced_graph = Neo4jGraph(
@@ -80,7 +83,7 @@ schema = enhanced_graph.schema
 
 # Initialize LLM
 groq_llm = ChatGroq(
-    model="llama-3.2-90b-vision-preview",
+    model="llama-3.2-90b-text-preview",
 )
 # co = cohere.Client('Cohere-Api-Key')
 open_llm = ChatOpenAI(model="gpt-3.5-turbo")
@@ -90,6 +93,17 @@ llm_sonnete = ChatAnthropic(
     model="claude-3-5-sonnet-20240620",
     temperature=0,
     max_tokens=1024,
+    timeout=None,
+    max_retries=2,
+    # other params...
+)
+
+
+ 
+llm_gemeini = ChatGoogleGenerativeAI(
+    model="gemini-1.5-pro",
+    temperature=0,
+    max_tokens=None,
     timeout=None,
     max_retries=2,
     # other params...
@@ -121,7 +135,7 @@ prompt = FewShotPromptTemplate(
     examples=examples,
     example_prompt=example_prompt,
     prefix=""""Task: Generate a Cypher statement to query a graph database.
-            Instructions:
+            ## Instructions:
             You are a Neo4j expert. Given an input question, create a syntactically correct Cypher query to run.
             Use only the provided relationship types and properties in the schema.
             Do not use any other relationship types or properties that are not provided.
@@ -134,6 +148,8 @@ prompt = FewShotPromptTemplate(
             If the generated Cypher query contains a date, convert it to date format instead of directly matching with a string. Example: (d.date >= date("2023-01-01") AND d.date <= date("2023-12-31")).
             Before making any Cypher query, please check the schema to match the cases of the nodes and relationships strictly.
             Double check the Cypher query before executing it. It should be syntactically correct.
+            ## Examples:
+            Strictly consider given examples.
             Below are a number of examples of questions and their corresponding Cypher queries:""",
     suffix="User input: {question}\nCypher query: ",
     input_variables=["question", "schema"],
@@ -318,12 +334,12 @@ def generate_response(user_input, schema):
                                                                 
             ##User input: {question}
             ##Result: {result}
-            ##Schema: {schema}
+           
             
             ###Form a clear, human-understandable answer that:
             - Give the Answer of the User input based on the Result. Include Each and Every Information From Result. Do not Include Previous conversation in your response.
             - Uses appropriate formatting ($,',',%,-) and tables
-            - Dont Include Schema Information in your response
+            - if result is empty that means information is not available related to user input. 
             """)
 
             present_chain = (
@@ -334,7 +350,7 @@ def generate_response(user_input, schema):
                     "chat_history": RunnableLambda(lambda _: memory.chat_memory.messages)
                 }
                 | present_prompt
-                | llm_cohere 
+                | llm_gemeini 
                 | StrOutputParser()
             )
             
