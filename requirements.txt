@@ -10,3 +10,4 @@ langchain_cohere
 langchain_anthropic 
 sentence-transformers
 langchain-cohere
+langchain-google-genai
