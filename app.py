@@ -79,9 +79,7 @@ enhanced_graph = Neo4jGraph(
     enhanced_schema=True,
 )
 
-example_prompt = PromptTemplate.from_template(
-    "User input: {question}\nCypher query: {query}"
-)
+
 
 schema = enhanced_graph.schema
 
@@ -141,6 +139,10 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
     Neo4jVector,
     k=5,
     input_keys=["question"],
+)
+
+example_prompt = PromptTemplate.from_template(
+    "User input: {question}\nCypher query: {query}"
 )
 
 prompt = FewShotPromptTemplate(
