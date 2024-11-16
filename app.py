@@ -83,7 +83,7 @@ schema = enhanced_graph.schema
 
 # Initialize LLM
 groq_llm = ChatGroq(
-    model="llama-3.2-90b-text-preview",
+    model="llama-3.1-70b-versatile",
 )
 # co = cohere.Client('Cohere-Api-Key')
 open_llm = ChatOpenAI(model="gpt-3.5-turbo")
@@ -227,7 +227,7 @@ def generate_response(user_input, schema):
             "chat_history": RunnableLambda(lambda _: memory.chat_memory.messages)
         }
         | validation_prompt
-        | llm_cohere
+        | groq_llm
         | StrOutputParser()
     )
 
