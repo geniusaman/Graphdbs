@@ -7,7 +7,7 @@ import os
 from examples import examples
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-from langchain_openai import OpenAIEmbeddings
+# from langchain_openai import OpenAIEmbeddings
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 from streamlit_chat import message
 from langchain_core.prompts import ChatPromptTemplate
@@ -21,9 +21,9 @@ import os
 import base64
 from PIL import Image
 from langchain_anthropic import ChatAnthropic
-from langchain_cohere import CohereEmbeddings
+# from langchain_cohere import CohereEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
-
+from langchain_huggingface import HuggingFaceEmbeddings
 
 
 st.set_page_config(layout="wide")
@@ -118,17 +118,25 @@ llm_gemeini = ChatGoogleGenerativeAI(
 #     k=5,
 #     input_keys=["question"],
 # )
+# example_selector = SemanticSimilarityExampleSelector.from_examples(
+#     examples,
+#     CohereEmbeddings(
+#         model="embed-multilingual-v3.0",  # Note: model_name instead of model
+#     ),
+#     Neo4jVector,
+#     k=5,
+#     input_keys=["question"],
+# )
+# example_prompt = PromptTemplate.from_template(
+#     "User input: {question}\nCypher query: {query}"
+# )
+
 example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples,
-    CohereEmbeddings(
-        model="embed-multilingual-v3.0",  # Note: model_name instead of model
-    ),
+    HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),  # Popular lightweight model
     Neo4jVector,
     k=5,
     input_keys=["question"],
-)
-example_prompt = PromptTemplate.from_template(
-    "User input: {question}\nCypher query: {query}"
 )
 
 prompt = FewShotPromptTemplate(
