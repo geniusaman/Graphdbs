@@ -170,6 +170,9 @@ examples = [
          "query": "MATCH (s:Supplier)-[:SUPPLIES|OFFERS_PRODUCT]->(po:PurchaseOrder) WHERE po.category = 'Stainless Steel' WITH po.product_name AS Product, s.supplier_name AS SupplierName, COLLECT(DISTINCT po.unit_price) AS unit_prices, COLLECT(DISTINCT po.po_amount) AS po_amounts UNWIND unit_prices AS unit_price UNWIND po_amounts AS po_amount WITH Product, SupplierName, MIN(unit_price) AS LowestUnitPrice, MAX(unit_price) AS HighestUnitPrice, AVG(unit_price) AS AvgUnitPrice, MIN(po_amount) AS LowestPOAmount, MAX(po_amount) AS HighestPOAmount, AVG(po_amount) AS AvgPOAmount RETURN Product, SupplierName, LowestPOAmount, HighestPOAmount, AvgPOAmount, LowestUnitPrice, HighestUnitPrice, AvgUnitPrice"
  
     },
+    {   "question":"what is the stock status for 316 Stainless square Bar 1",
+         "query": "MATCH (item:InventoryItem {description: '316 Stainless Square Bar 1"'})-[:HAS_INVENTORY_STATUS]->(status:InventoryStatus) RETURN status.status as stock_status"
+    },
     ]
 
 print(examples)
