@@ -171,7 +171,7 @@ examples = [
  
     },
     {   "question":"what is the stock status for 316 Stainless square Bar 1",
-         "query": "MATCH (item:InventoryItem {description: '316 Stainless Square Bar 1\\"'})-[:HAS_INVENTORY_STATUS]->(status:InventoryStatus) RETURN status.status as stock_status"
+         "query": "MATCH (item:InventoryItem) WHERE item.description CONTAINS '316 Stainless Square Bar' MATCH (item)-[:HAS_INVENTORY_STATUS]->(status:InventoryStatus) RETURN status.status as stock_status"
     },
     ]
 
