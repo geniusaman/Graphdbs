@@ -173,6 +173,9 @@ examples = [
     {   "question":"what is the stock status for 316 Stainless square Bar 1",
          "query": "MATCH (item:InventoryItem) WHERE item.description CONTAINS '316 Stainless Square Bar' MATCH (item)-[:HAS_INVENTORY_STATUS]->(status:InventoryStatus) RETURN status.status as stock_status"
     },
+    {   "question":"what is the total spend of HP Elite 800 G6 in second quarter 2024?",
+         "query": "MATCH (po:PurchaseOrder) WHERE po.product_name contains 'HP Elite 800 G6' RETURN toString(po.po_date.year) + ' Q' + toString(duration.between(date({ year: po.po_date.year, month: 1, day: 1 }), date(po.po_date)).months / 3 + 1) as quarter, sum(po.po_amount) as total_spend ORDER BY quarter DESC"
+    },
     ]
 
 print(examples)
