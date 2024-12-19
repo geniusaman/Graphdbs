@@ -162,7 +162,7 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
     examples,
     HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),  # Popular lightweight model
     Neo4jVector,
-    k=5,
+    k=2,
     input_keys=["question"],
 )
 
